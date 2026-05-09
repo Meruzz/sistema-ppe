@@ -15,12 +15,15 @@ class Docente extends Model
 
     protected $fillable = [
         'user_id', 'cedula', 'nombres', 'apellidos',
-        'especialidad', 'telefono', 'activo',
+        'especialidad', 'telefono', 'activo', 'es_coordinador',
     ];
 
     protected function casts(): array
     {
-        return ['activo' => 'boolean'];
+        return [
+            'activo'         => 'boolean',
+            'es_coordinador' => 'boolean',
+        ];
     }
 
     public function user(): BelongsTo

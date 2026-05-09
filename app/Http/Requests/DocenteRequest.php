@@ -25,8 +25,9 @@ class DocenteRequest extends FormRequest
             'nombres'      => ['required', 'string', 'max:255'],
             'apellidos'    => ['required', 'string', 'max:255'],
             'especialidad' => ['nullable', 'string', 'max:255'],
-            'telefono'     => ['nullable', 'string', 'max:20'],
-            'activo'       => ['sometimes', 'boolean'],
+            'telefono'       => ['nullable', 'string', 'max:20'],
+            'activo'         => ['sometimes', 'boolean'],
+            'es_coordinador' => ['sometimes', 'boolean'],
         ];
     }
 }

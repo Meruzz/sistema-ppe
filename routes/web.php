@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AnioLectivoController;
 use App\Http\Controllers\BitacoraController;
+use App\Http\Controllers\ConvalidacionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AmbitoController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController;
 use Illuminate\Support\Facades\Route;
@@ -29,9 +32,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Solo administrador
     Route::middleware('role:administrador')->group(function () {
+        // importar debe ir antes del resource para no ser capturado por {alumno}
+        Route::get('/alumnos/importar', [ImportController::class, 'create'])->name('alumnos.importar');
+        Route::post('/alumnos/importar', [ImportController::class, 'store'])->name('alumnos.importar.store');
         Route::resource('alumnos', AlumnoController::class);
         Route::resource('docentes', DocenteController::class);
         Route::resource('ambitos', AmbitoController::class)->except('show');
+        Route::resource('anio-lectivos', AnioLectivoController::class)
+            ->parameters(['anio-lectivos' => 'anio_lectivo'])
+            ->except('show');
+        Route::resource('convalidaciones', ConvalidacionController::class)
+            ->only(['create', 'store', 'edit', 'update', 'destroy']);
     });
 
     // Admin + Docente

@@ -53,6 +53,16 @@ class Alumno extends Model
         return $this->hasMany(Bitacora::class);
     }
 
+    public function convalidaciones(): HasMany
+    {
+        return $this->hasMany(Convalidacion::class);
+    }
+
+    public function tieneConvalidacion(): bool
+    {
+        return $this->convalidaciones()->where('activo', true)->exists();
+    }
+
     public function getNombreCompletoAttribute(): string
     {
         return "{$this->nombres} {$this->apellidos}";

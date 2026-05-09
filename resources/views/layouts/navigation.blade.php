@@ -24,6 +24,7 @@
                         <x-nav-link :href="route('alumnos.index')" :active="request()->routeIs('alumnos.*')">Alumnos</x-nav-link>
                         <x-nav-link :href="route('docentes.index')" :active="request()->routeIs('docentes.*')">Docentes</x-nav-link>
                         <x-nav-link :href="route('ambitos.index')" :active="request()->routeIs('ambitos.*')">Ámbitos</x-nav-link>
+                        <x-nav-link :href="route('anio-lectivos.index')" :active="request()->routeIs('anio-lectivos.*')">Años lectivos</x-nav-link>
                     @endrole
 
                     @hasanyrole('administrador|docente')
@@ -115,6 +116,7 @@
                 <x-responsive-nav-link :href="route('alumnos.index')">Alumnos</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('docentes.index')">Docentes</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('ambitos.index')">Ámbitos</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('anio-lectivos.index')">Años lectivos</x-responsive-nav-link>
             @endrole
             @hasanyrole('administrador|docente')
                 <x-responsive-nav-link :href="route('grupos.index')">Grupos</x-responsive-nav-link>

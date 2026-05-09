@@ -67,10 +67,51 @@
                 <div class="flex flex-wrap gap-2">
                     @foreach($alumno->grupos as $g)
                         <a href="{{ route('grupos.show', $g) }}" class="cy-badge-cyan hover:opacity-80 transition-opacity">
-                            {{ $g->nombre }}{{ $g->materia ? ' · ' . $g->materia->nombre : '' }}
+                            {{ $g->nombre }}{{ $g->ambito ? ' · ' . $g->ambito->nombre : '' }}
                         </a>
                     @endforeach
                 </div>
+            @endif
+        </section>
+
+        {{-- Convalidaciones --}}
+        <section class="cy-card overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300">Convalidaciones PPE</h2>
+                @role('administrador')
+                    <a href="{{ route('convalidaciones.create', ['alumno_id' => $alumno->id]) }}"
+                       class="text-brand-600 dark:text-brand-400 hover:underline text-sm">+ Agregar</a>
+                @endrole
+            </div>
+            @if($alumno->convalidaciones->isEmpty())
+                <p class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Sin convalidaciones registradas.</p>
+            @else
+                <ul class="divide-y divide-slate-200 dark:divide-slate-800">
+                    @foreach($alumno->convalidaciones as $conv)
+                        <li class="px-6 py-3 flex items-center justify-between gap-4">
+                            <div>
+                                <span class="{{ $conv->activo ? 'cy-badge-amber' : 'cy-badge-muted' }}">{{ $conv->tipo_label }}</span>
+                                @if($conv->descripcion)
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $conv->descripcion }}</p>
+                                @endif
+                            </div>
+                            @role('administrador')
+                                <div class="flex gap-3 text-sm shrink-0">
+                                    <a href="{{ route('convalidaciones.edit', $conv) }}"
+                                       class="text-slate-600 dark:text-slate-300 hover:underline">Editar</a>
+                                    <button type="button"
+                                            @click="$dispatch('confirm-delete', {
+                                                url: '{{ route('convalidaciones.destroy', $conv) }}',
+                                                name: '{{ $conv->tipo_label }}'
+                                            })"
+                                            class="text-red-600 dark:text-red-400 hover:underline">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            @endrole
+                        </li>
+                    @endforeach
+                </ul>
             @endif
         </section>
 

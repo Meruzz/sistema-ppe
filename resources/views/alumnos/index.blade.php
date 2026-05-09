@@ -5,7 +5,10 @@
                 <h1 class="cy-page-title">Alumnos</h1>
                 <p class="cy-page-subtitle">Gestiona estudiantes registrados en el programa.</p>
             </div>
-            <a href="{{ route('alumnos.create') }}" class="cy-btn-primary">Nuevo alumno</a>
+            <div class="flex gap-2">
+                <a href="{{ route('alumnos.importar') }}" class="cy-btn-ghost">Importar CSV</a>
+                <a href="{{ route('alumnos.create') }}" class="cy-btn-primary">Nuevo alumno</a>
+            </div>
         </div>
     </x-slot>
 

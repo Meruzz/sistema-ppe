@@ -28,6 +28,7 @@
                             <th class="text-left px-4 py-3">Docente</th>
                             <th class="text-left px-4 py-3">Especialidad</th>
                             <th class="text-left px-4 py-3">Email</th>
+                            <th class="text-left px-4 py-3">Rol</th>
                             <th class="text-left px-4 py-3">Estado</th>
                             <th class="px-4 py-3"></th>
                         </tr>
@@ -40,14 +41,24 @@
                                 <td class="px-4 py-3 text-sm text-slate-600 dark:text-slate-400">{{ $d->especialidad ?? '—' }}</td>
                                 <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400">{{ $d->user->email }}</td>
                                 <td class="px-4 py-3">
-                                    @if($d->activo)<span class="cy-badge-yellow">Activo</span>
+                                    @if($d->es_coordinador)
+                                        <span class="cy-badge-amber">Coordinador PPE</span>
+                                    @else
+                                        <span class="cy-badge-muted">Facilitador</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if($d->activo)<span class="cy-badge-green">Activo</span>
                                     @else<span class="cy-badge-muted">Inactivo</span>@endif
                                 </td>
                                 <td class="px-4 py-3 text-right whitespace-nowrap text-sm">
                                     <a href="{{ route('docentes.show', $d) }}" class="text-brand-600 dark:text-brand-400 hover:underline">Ver</a>
                                     <a href="{{ route('docentes.edit', $d) }}" class="text-slate-600 dark:text-slate-300 hover:underline ms-3">Editar</a>
                                     <button type="button"
-                                            @click="$dispatch('open-confirm', { action: '{{ route('docentes.destroy', $d) }}', message: 'Se eliminará al docente {{ $d->nombre_completo }}. Esta acción no se puede deshacer.' })"
+                                            @click="$dispatch('confirm-delete', {
+                                                url: '{{ route('docentes.destroy', $d) }}',
+                                                name: '{{ addslashes($d->nombre_completo) }}'
+                                            })"
                                             class="text-red-600 dark:text-red-400 hover:underline ms-3">
                                         Eliminar
                                     </button>

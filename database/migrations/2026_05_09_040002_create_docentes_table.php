@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('especialidad')->nullable();
             $table->string('telefono', 20)->nullable();
             $table->boolean('activo')->default(true);
+            $table->boolean('es_coordinador')->default(false);
             $table->timestamps();
 
             $table->index('activo');
+            $table->index('es_coordinador');
         });
     }
 

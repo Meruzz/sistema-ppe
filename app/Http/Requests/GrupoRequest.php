@@ -17,7 +17,7 @@ class GrupoRequest extends FormRequest
             'nombre'             => ['required', 'string', 'max:255'],
             'docente_id'         => ['nullable', 'exists:docentes,id'],
             'ambito_id'          => ['nullable', 'exists:ambitos,id'],
-            'anio_lectivo'       => ['required', 'string', 'max:9'],
+            'anio_lectivo_id'    => ['nullable', 'exists:anio_lectivos,id'],
             'anio_bachillerato'  => ['required', 'in:1ro,2do'],
             'descripcion'        => ['nullable', 'string'],
             'activo'             => ['sometimes', 'boolean'],

@@ -42,16 +42,20 @@ class DocenteController extends Controller
                 'password'          => Hash::make($request->password),
                 'email_verified_at' => now(),
             ]);
-            $user->assignRole('docente');
+
+            $esCoordinador = $request->boolean('es_coordinador');
+            $roles = $esCoordinador ? ['docente', 'coordinador_ppe'] : ['docente'];
+            $user->syncRoles($roles);
 
             Docente::create([
-                'user_id'      => $user->id,
-                'cedula'       => $request->cedula,
-                'nombres'      => $request->nombres,
-                'apellidos'    => $request->apellidos,
-                'especialidad' => $request->especialidad,
-                'telefono'     => $request->telefono,
-                'activo'       => $request->boolean('activo', true),
+                'user_id'        => $user->id,
+                'cedula'         => $request->cedula,
+                'nombres'        => $request->nombres,
+                'apellidos'      => $request->apellidos,
+                'especialidad'   => $request->especialidad,
+                'telefono'       => $request->telefono,
+                'activo'         => $request->boolean('activo', true),
+                'es_coordinador' => $esCoordinador,
             ]);
         });
 
@@ -60,7 +64,7 @@ class DocenteController extends Controller
 
     public function show(Docente $docente)
     {
-        $docente->load(['user', 'grupos.materia', 'grupos.alumnos']);
+        $docente->load(['user', 'grupos.ambito', 'grupos.alumnos']);
         return view('docentes.show', compact('docente'));
     }
 
@@ -78,6 +82,10 @@ class DocenteController extends Controller
                 $data['password'] = Hash::make($request->password);
             }
             $docente->user->update($data);
+
+            $esCoordinador = $request->boolean('es_coordinador');
+            $roles = $esCoordinador ? ['docente', 'coordinador_ppe'] : ['docente'];
+            $docente->user->syncRoles($roles);
 
             $docente->update($request->safe()->except(['name', 'email', 'password']));
         });

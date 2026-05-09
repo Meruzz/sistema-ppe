@@ -1,4 +1,4 @@
-@props(['grupo' => null, 'docentes', 'ambitos', 'alumnos'])
+@props(['grupo' => null, 'docentes', 'ambitos', 'alumnos', 'anioLectivos'])
 @csrf
 @php $alumnosSeleccionados = old('alumnos', $grupo?->alumnos->pluck('id')->toArray() ?? []); @endphp
 
@@ -9,10 +9,17 @@
                class="cy-input mt-1" required>
     </div>
     <div>
-        <label for="anio_lectivo" class="cy-label">Año lectivo</label>
-        <input id="anio_lectivo" type="text" name="anio_lectivo"
-               value="{{ old('anio_lectivo', $grupo?->anio_lectivo ?? '2025-2026') }}"
-               maxlength="9" class="cy-input mt-1 font-mono" required>
+        <label for="anio_lectivo_id" class="cy-label">Año lectivo</label>
+        <select id="anio_lectivo_id" name="anio_lectivo_id" class="cy-select mt-1">
+            <option value="">— Sin asignar —</option>
+            @foreach($anioLectivos as $al)
+                <option value="{{ $al->id }}"
+                        @selected(old('anio_lectivo_id', $grupo?->anio_lectivo_id) == $al->id)>
+                    {{ $al->nombre }} ({{ ucfirst($al->ciclo) }}){{ $al->activo ? ' ✓' : '' }}
+                </option>
+            @endforeach
+        </select>
+        @error('anio_lectivo_id') <p class="cy-error">{{ $message }}</p> @enderror
     </div>
     <div>
         <label for="anio_bachillerato" class="cy-label">Año de bachillerato <span class="text-rose-500">*</span></label>

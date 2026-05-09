@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GrupoRequest;
 use App\Models\Alumno;
 use App\Models\Ambito;
+use App\Models\AnioLectivo;
 use App\Models\Docente;
 use App\Models\Grupo;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class GrupoController extends Controller
 {
     public function index(Request $request)
     {
-        $grupos = Grupo::with(['docente', 'ambito'])
+        $grupos = Grupo::with(['docente', 'ambito', 'anioLectivo'])
             ->withCount('alumnos')
             ->when($request->q, fn ($q, $t) => $q->where('nombre', 'like', "%{$t}%"))
             ->when($request->anio, fn ($q, $a) => $q->where('anio_bachillerato', $a))
@@ -24,13 +25,19 @@ class GrupoController extends Controller
         return view('grupos.index', compact('grupos'));
     }
 
+    private function formData(): array
+    {
+        return [
+            'docentes'      => Docente::where('activo', true)->orderBy('apellidos')->get(),
+            'ambitos'       => Ambito::where('activo', true)->orderBy('nombre')->get(),
+            'alumnos'       => Alumno::where('activo', true)->orderBy('apellidos')->get(),
+            'anioLectivos'  => AnioLectivo::orderByDesc('nombre')->get(),
+        ];
+    }
+
     public function create()
     {
-        return view('grupos.create', [
-            'docentes' => Docente::where('activo', true)->orderBy('apellidos')->get(),
-            'ambitos'  => Ambito::where('activo', true)->orderBy('nombre')->get(),
-            'alumnos'  => Alumno::where('activo', true)->orderBy('apellidos')->get(),
-        ]);
+        return view('grupos.create', $this->formData());
     }
 
     public function store(GrupoRequest $request)
@@ -52,12 +59,10 @@ class GrupoController extends Controller
 
     public function edit(Grupo $grupo)
     {
-        return view('grupos.edit', [
-            'grupo'    => $grupo->load('alumnos'),
-            'docentes' => Docente::where('activo', true)->orderBy('apellidos')->get(),
-            'ambitos'  => Ambito::where('activo', true)->orderBy('nombre')->get(),
-            'alumnos'  => Alumno::where('activo', true)->orderBy('apellidos')->get(),
-        ]);
+        return view('grupos.edit', array_merge(
+            $this->formData(),
+            ['grupo' => $grupo->load('alumnos')]
+        ));
     }
 
     public function update(GrupoRequest $request, Grupo $grupo)

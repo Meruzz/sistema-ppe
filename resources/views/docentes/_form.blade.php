@@ -41,13 +41,20 @@
         <input id="telefono" type="tel" name="telefono" value="{{ old('telefono', $docente?->telefono) }}"
                class="cy-input" autocomplete="tel" inputmode="tel">
     </div>
-    <div class="md:col-span-2">
-        <label class="inline-flex items-center cursor-pointer">
+    <div class="md:col-span-2 flex flex-wrap gap-6">
+        <label class="inline-flex items-center gap-2 cursor-pointer">
             <input type="hidden" name="activo" value="0">
             <input type="checkbox" name="activo" value="1"
-                   class="rounded-cy bg-transparent border-cy-border-light/30 dark:border-cy-border text-cy-yellow focus:ring-cy-yellow"
+                   class="rounded border-slate-300 dark:border-slate-700 text-brand-600"
                    @checked(old('activo', $docente?->activo ?? true))>
-            <span class="ms-2 text-xs font-mono uppercase tracking-widest">Activo</span>
+            <span class="text-sm text-slate-700 dark:text-slate-300">Activo</span>
+        </label>
+        <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="hidden" name="es_coordinador" value="0">
+            <input type="checkbox" name="es_coordinador" value="1"
+                   class="rounded border-slate-300 dark:border-slate-700 text-brand-600"
+                   @checked(old('es_coordinador', $docente?->es_coordinador ?? false))>
+            <span class="text-sm text-slate-700 dark:text-slate-300">Coordinador PPE</span>
         </label>
     </div>
 </div>

@@ -13,13 +13,13 @@ return new class extends Migration
             $table->string('nombre');
             $table->foreignId('docente_id')->nullable()->constrained('docentes')->nullOnDelete();
             $table->foreignId('ambito_id')->nullable()->constrained('ambitos')->nullOnDelete();
-            $table->string('anio_lectivo', 9);
+            $table->foreignId('anio_lectivo_id')->nullable()->constrained('anio_lectivos')->nullOnDelete();
             $table->enum('anio_bachillerato', ['1ro', '2do'])->default('1ro');
             $table->text('descripcion')->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->index('anio_lectivo');
+            $table->index('anio_lectivo_id');
             $table->index('anio_bachillerato');
         });
     }

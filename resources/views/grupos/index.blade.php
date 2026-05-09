@@ -75,7 +75,7 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-slate-600 dark:text-slate-400">{{ $g->docente->nombre_completo ?? '—' }}</td>
-                                <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400">{{ $g->anio_lectivo }}</td>
+                                <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400">{{ $g->anioLectivo?->nombre ?? '—' }}</td>
                                 <td class="px-4 py-3"><span class="cy-badge-cyan">{{ $g->alumnos_count }}</span></td>
                                 <td class="px-4 py-3 text-right whitespace-nowrap text-sm">
                                     <a href="{{ route('grupos.show', $g) }}" class="text-brand-600 dark:text-brand-400 hover:underline">Ver</a>

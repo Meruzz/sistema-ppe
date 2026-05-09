@@ -12,6 +12,18 @@
     <div class="py-8 max-w-5xl mx-auto safe-px space-y-6">
 
         <section class="cy-card p-6">
+            <div class="flex flex-wrap gap-2 mb-4">
+                @if($docente->es_coordinador)
+                    <span class="cy-badge-amber">Coordinador PPE</span>
+                @else
+                    <span class="cy-badge-muted">Facilitador</span>
+                @endif
+                @if($docente->activo)
+                    <span class="cy-badge-green">Activo</span>
+                @else
+                    <span class="cy-badge-muted">Inactivo</span>
+                @endif
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
                     <div class="cy-label">Cédula</div>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Actividad;
 use App\Models\Alumno;
 use App\Models\Ambito;
+use App\Models\AnioLectivo;
 use App\Models\Bitacora;
 use App\Models\Docente;
 use App\Models\Grupo;
@@ -17,6 +18,12 @@ class DemoDataSeeder extends Seeder
 {
     public function run(): void
     {
+        // Año lectivo activo
+        $anioLectivo = AnioLectivo::firstOrCreate(
+            ['nombre' => '2025-2026'],
+            ['ciclo' => 'sierra', 'inicio' => '2025-09-01', 'fin' => '2026-06-30', 'activo' => true]
+        );
+
         // 5 ámbitos oficiales del PPE
         $ambitosData = config('ppe.ambitos');
         $ambitos = collect($ambitosData)->map(fn ($a) => Ambito::firstOrCreate(
@@ -39,24 +46,27 @@ class DemoDataSeeder extends Seeder
              }]
         ));
 
-        // 5 docentes
+        // 5 docentes (docente1 es Coordinador PPE)
         $docentes = collect();
         for ($i = 1; $i <= 5; $i++) {
+            $esCoordinador = ($i === 1);
             $user = User::firstOrCreate(
                 ['email' => "docente{$i}@ppe.edu.ec"],
                 ['name' => "Docente {$i}", 'password' => Hash::make('password'), 'email_verified_at' => now()]
             );
-            $user->syncRoles(['docente']);
+            $roles = $esCoordinador ? ['docente', 'coordinador_ppe'] : ['docente'];
+            $user->syncRoles($roles);
 
             $docentes->push(Docente::firstOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'cedula'       => '17' . str_pad((string) $i, 8, '0', STR_PAD_LEFT),
-                    'nombres'      => 'Docente',
-                    'apellidos'    => "Apellido{$i}",
-                    'especialidad' => $ambitos->random()->nombre,
-                    'telefono'     => '099' . random_int(1000000, 9999999),
-                    'activo'       => true,
+                    'cedula'         => '17' . str_pad((string) $i, 8, '0', STR_PAD_LEFT),
+                    'nombres'        => 'Docente',
+                    'apellidos'      => "Apellido{$i}",
+                    'especialidad'   => $ambitos->random()->nombre,
+                    'telefono'       => '099' . random_int(1000000, 9999999),
+                    'activo'         => true,
+                    'es_coordinador' => $esCoordinador,
                 ]
             ));
         }
@@ -73,7 +83,7 @@ class DemoDataSeeder extends Seeder
         $grupos = collect();
         foreach ($gruposConfig as $cfg) {
             $grupos->push(Grupo::firstOrCreate(
-                ['nombre' => $cfg['nombre'], 'anio_lectivo' => '2025-2026'],
+                ['nombre' => $cfg['nombre'], 'anio_lectivo_id' => $anioLectivo->id],
                 [
                     'docente_id'         => $docentes->random()->id,
                     'ambito_id'          => $ambitos->random()->id,
@@ -165,7 +175,6 @@ class DemoDataSeeder extends Seeder
             'La experiencia fortaleció mi sentido de pertenencia a la institución. Aprendí a escuchar diferentes perspectivas antes de tomar decisiones grupales.',
         ];
 
-        $docentesPorId = $docentes->keyBy('id');
         $actividadesCompletadas = Actividad::where('estado', 'completada')->with('grupo.docente')->get();
 
         foreach ($actividadesCompletadas as $act) {
