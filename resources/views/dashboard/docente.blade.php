@@ -34,6 +34,37 @@
                 @endif
             </section>
 
+            {{-- Bitácoras pendientes de revisar --}}
+            @if($bitacorasPendientes->isNotEmpty())
+                <section class="cy-card overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                        <h3 class="cy-section-title">Bitácoras por revisar</h3>
+                        <span class="cy-badge-amber">{{ $bitacorasPendientes->count() }} pendiente{{ $bitacorasPendientes->count() !== 1 ? 's' : '' }}</span>
+                    </div>
+                    <ul class="divide-y divide-slate-200 dark:divide-slate-800">
+                        @foreach($bitacorasPendientes->take(8) as $b)
+                            <li class="px-6 py-3 flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                <div class="min-w-0">
+                                    <p class="font-medium text-slate-800 dark:text-slate-200 text-sm truncate">{{ $b->alumno->nombre_completo }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                                        {{ $b->fecha->format('d/m/Y') }}
+                                        @if($b->actividad) · {{ $b->actividad->titulo }} @endif
+                                    </p>
+                                </div>
+                                <a href="{{ route('bitacoras.show', $b) }}" class="text-brand-600 dark:text-brand-400 hover:underline text-sm shrink-0">Revisar</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                    @if($bitacorasPendientes->count() > 8)
+                        <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-800">
+                            <a href="{{ route('bitacoras.index') }}" class="text-sm text-brand-600 dark:text-brand-400 hover:underline">
+                                Ver todas ({{ $bitacorasPendientes->count() }})
+                            </a>
+                        </div>
+                    @endif
+                </section>
+            @endif
+
             <section class="cy-card p-6">
                 <h3 class="cy-section-title mb-4">Próximas actividades</h3>
                 @if($proximasActividades->isEmpty())

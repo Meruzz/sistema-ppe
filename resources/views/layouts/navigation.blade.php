@@ -23,13 +23,14 @@
                     @role('administrador')
                         <x-nav-link :href="route('alumnos.index')" :active="request()->routeIs('alumnos.*')">Alumnos</x-nav-link>
                         <x-nav-link :href="route('docentes.index')" :active="request()->routeIs('docentes.*')">Docentes</x-nav-link>
-                        <x-nav-link :href="route('materias.index')" :active="request()->routeIs('materias.*')">Materias</x-nav-link>
+                        <x-nav-link :href="route('ambitos.index')" :active="request()->routeIs('ambitos.*')">Ámbitos</x-nav-link>
                     @endrole
 
                     @hasanyrole('administrador|docente')
                         <x-nav-link :href="route('grupos.index')" :active="request()->routeIs('grupos.*')">Grupos</x-nav-link>
                         <x-nav-link :href="route('actividades.index')" :active="request()->routeIs('actividades.*')">Actividades</x-nav-link>
                     @endhasanyrole
+                    <x-nav-link :href="route('bitacoras.index')" :active="request()->routeIs('bitacoras.*')">Bitácora</x-nav-link>
                 </div>
             </div>
 
@@ -113,12 +114,13 @@
             @role('administrador')
                 <x-responsive-nav-link :href="route('alumnos.index')">Alumnos</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('docentes.index')">Docentes</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('materias.index')">Materias</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('ambitos.index')">Ámbitos</x-responsive-nav-link>
             @endrole
             @hasanyrole('administrador|docente')
                 <x-responsive-nav-link :href="route('grupos.index')">Grupos</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('actividades.index')">Actividades</x-responsive-nav-link>
             @endhasanyrole
+            <x-responsive-nav-link :href="route('bitacoras.index')">Bitácora</x-responsive-nav-link>
         </div>
         <div class="py-3 border-t border-slate-200 dark:border-slate-800">
             <div class="px-4 mb-2">

@@ -1,5 +1,14 @@
-@props(['actividad' => null, 'grupos', 'materias'])
+@props(['actividad' => null, 'grupos', 'ambitos'])
 @csrf
+
+@php
+$fases = config('ppe.fases', []);
+$faseLabels = [
+    'formacion'    => 'Formación — sensibilización y aprendizaje',
+    'ejecucion'    => 'Ejecución — actividades en la comunidad',
+    'presentacion' => 'Presentación — casa abierta / resultados',
+];
+@endphp
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div class="md:col-span-2">
@@ -12,16 +21,35 @@
         <select id="grupo_id" name="grupo_id" class="cy-select mt-1" required>
             <option value="">—</option>
             @foreach($grupos as $g)
-                <option value="{{ $g->id }}" @selected(old('grupo_id', $actividad?->grupo_id ?? request('grupo_id'))==$g->id)>{{ $g->nombre }}</option>
+                <option value="{{ $g->id }}" @selected(old('grupo_id', $actividad?->grupo_id ?? request('grupo_id')) == $g->id)>
+                    {{ $g->nombre }} ({{ $g->anio_bachillerato }})
+                </option>
             @endforeach
         </select>
     </div>
     <div>
-        <label for="materia_id" class="cy-label">Materia</label>
-        <select id="materia_id" name="materia_id" class="cy-select mt-1">
-            <option value="">—</option>
-            @foreach($materias as $m)
-                <option value="{{ $m->id }}" @selected(old('materia_id', $actividad?->materia_id)==$m->id)>{{ $m->nombre }}</option>
+        <label for="ambito_id" class="cy-label">Ámbito PPE</label>
+        <select id="ambito_id" name="ambito_id" class="cy-select mt-1">
+            <option value="">— Sin ámbito —</option>
+            @foreach($ambitos as $a)
+                <option value="{{ $a->id }}" @selected(old('ambito_id', $actividad?->ambito_id) == $a->id)>{{ $a->nombre }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="fase" class="cy-label">Fase PPE</label>
+        <select id="fase" name="fase" class="cy-select mt-1">
+            <option value="">— Sin fase asignada —</option>
+            @foreach($faseLabels as $val => $label)
+                <option value="{{ $val }}" @selected(old('fase', $actividad?->fase) === $val)>{{ $label }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="estado" class="cy-label">Estado</label>
+        <select id="estado" name="estado" class="cy-select mt-1" required>
+            @foreach(['planificada' => 'Planificada', 'en_curso' => 'En curso', 'completada' => 'Completada', 'cancelada' => 'Cancelada'] as $val => $label)
+                <option value="{{ $val }}" @selected(old('estado', $actividad?->estado ?? 'planificada') === $val)>{{ $label }}</option>
             @endforeach
         </select>
     </div>
@@ -48,18 +76,10 @@
                value="{{ old('hora_fin', $actividad?->hora_fin) }}"
                class="cy-input mt-1">
     </div>
-    <div>
+    <div class="md:col-span-2">
         <label for="lugar" class="cy-label">Lugar</label>
         <input id="lugar" type="text" name="lugar" value="{{ old('lugar', $actividad?->lugar) }}"
                class="cy-input mt-1">
-    </div>
-    <div>
-        <label for="estado" class="cy-label">Estado</label>
-        <select id="estado" name="estado" class="cy-select mt-1" required>
-            @foreach(['planificada','en_curso','completada','cancelada'] as $e)
-                <option value="{{ $e }}" @selected(old('estado', $actividad?->estado ?? 'planificada')===$e)>{{ ucfirst(str_replace('_',' ',$e)) }}</option>
-            @endforeach
-        </select>
     </div>
     <div class="md:col-span-2">
         <label for="descripcion" class="cy-label">Descripción</label>

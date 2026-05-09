@@ -13,7 +13,8 @@ return new class extends Migration
             $table->string('titulo');
             $table->text('descripcion')->nullable();
             $table->foreignId('grupo_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('materia_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('ambito_id')->nullable()->constrained('ambitos')->nullOnDelete();
+            $table->enum('fase', ['formacion', 'ejecucion', 'presentacion'])->nullable();
             $table->date('fecha');
             $table->time('hora_inicio')->nullable();
             $table->time('hora_fin')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
 
             $table->index('fecha');
             $table->index('estado');
+            $table->index('fase');
         });
     }
 

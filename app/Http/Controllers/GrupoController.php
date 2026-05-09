@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GrupoRequest;
 use App\Models\Alumno;
+use App\Models\Ambito;
 use App\Models\Docente;
 use App\Models\Grupo;
-use App\Models\Materia;
 use Illuminate\Http\Request;
 
 class GrupoController extends Controller
 {
     public function index(Request $request)
     {
-        $grupos = Grupo::with(['docente', 'materia'])
+        $grupos = Grupo::with(['docente', 'ambito'])
             ->withCount('alumnos')
             ->when($request->q, fn ($q, $t) => $q->where('nombre', 'like', "%{$t}%"))
-            ->orderBy('nombre')
+            ->when($request->anio, fn ($q, $a) => $q->where('anio_bachillerato', $a))
+            ->orderBy('anio_bachillerato')->orderBy('nombre')
             ->paginate(15)
             ->withQueryString();
 
@@ -27,7 +28,7 @@ class GrupoController extends Controller
     {
         return view('grupos.create', [
             'docentes' => Docente::where('activo', true)->orderBy('apellidos')->get(),
-            'materias' => Materia::where('activo', true)->orderBy('nombre')->get(),
+            'ambitos'  => Ambito::where('activo', true)->orderBy('nombre')->get(),
             'alumnos'  => Alumno::where('activo', true)->orderBy('apellidos')->get(),
         ]);
     }
@@ -45,7 +46,7 @@ class GrupoController extends Controller
 
     public function show(Grupo $grupo)
     {
-        $grupo->load(['docente', 'materia', 'alumnos', 'actividades' => fn ($q) => $q->orderByDesc('fecha')]);
+        $grupo->load(['docente', 'ambito', 'alumnos', 'actividades' => fn ($q) => $q->orderByDesc('fecha')]);
         return view('grupos.show', compact('grupo'));
     }
 
@@ -54,7 +55,7 @@ class GrupoController extends Controller
         return view('grupos.edit', [
             'grupo'    => $grupo->load('alumnos'),
             'docentes' => Docente::where('activo', true)->orderBy('apellidos')->get(),
-            'materias' => Materia::where('activo', true)->orderBy('nombre')->get(),
+            'ambitos'  => Ambito::where('activo', true)->orderBy('nombre')->get(),
             'alumnos'  => Alumno::where('activo', true)->orderBy('apellidos')->get(),
         ]);
     }

@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\GrupoController;
-use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\AmbitoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReporteController;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:administrador')->group(function () {
         Route::resource('alumnos', AlumnoController::class);
         Route::resource('docentes', DocenteController::class);
-        Route::resource('materias', MateriaController::class)->except('show');
+        Route::resource('ambitos', AmbitoController::class)->except('show');
     });
 
     // Admin + Docente
@@ -40,6 +41,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->parameters(['actividades' => 'actividad']);
         Route::post('/actividades/{actividad}/asistencia', [ActividadController::class, 'asistencia'])->name('actividades.asistencia');
     });
+
+    // Bitácoras (acceso por rol controlado en el controlador)
+    Route::resource('bitacoras', BitacoraController::class)
+        ->parameters(['bitacoras' => 'bitacora'])
+        ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+    Route::post('/bitacoras/{bitacora}/revisar', [BitacoraController::class, 'revisar'])->name('bitacoras.revisar');
 });
 
 require __DIR__.'/auth.php';

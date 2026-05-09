@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Actividad;
 use App\Models\Alumno;
+use App\Models\Bitacora;
 use App\Models\Docente;
 use App\Models\Grupo;
 use Illuminate\Http\Request;
@@ -78,14 +79,21 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('dashboard.docente', compact('docente', 'grupos', 'proximasActividades'));
+        $actividadIds = Actividad::whereIn('grupo_id', $grupos->pluck('id'))->pluck('id');
+        $bitacorasPendientes = Bitacora::with(['alumno', 'actividad'])
+            ->whereIn('actividad_id', $actividadIds)
+            ->whereNull('revisado_en')
+            ->orderBy('fecha')
+            ->get();
+
+        return view('dashboard.docente', compact('docente', 'grupos', 'proximasActividades', 'bitacorasPendientes'));
     }
 
     private function vistaAlumno($user)
     {
         $alumno = $user->alumno;
         if (! $alumno) {
-            return view('dashboard.alumno', ['alumno' => null]);
+            return view('dashboard.alumno', ['alumno' => null, 'actividadesSinBitacora' => collect()]);
         }
 
         $meta              = config('ppe.horas_requeridas', 80);
@@ -104,6 +112,15 @@ class DashboardController extends Controller
             ->limit(15)
             ->get();
 
-        return view('dashboard.alumno', compact('alumno', 'meta', 'horasCompletadas', 'progreso', 'proximas', 'historial'));
+        $actividadesSinBitacora = $alumno->actividades()
+            ->where('alumno_actividad.estado', 'asistio')
+            ->whereDoesntHave('bitacoras', fn ($q) => $q->where('alumno_id', $alumno->id))
+            ->orderByDesc('fecha')
+            ->get();
+
+        return view('dashboard.alumno', compact(
+            'alumno', 'meta', 'horasCompletadas', 'progreso',
+            'proximas', 'historial', 'actividadesSinBitacora'
+        ));
     }
 }

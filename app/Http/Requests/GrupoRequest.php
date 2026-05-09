@@ -14,14 +14,15 @@ class GrupoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre'       => ['required', 'string', 'max:255'],
-            'docente_id'   => ['nullable', 'exists:docentes,id'],
-            'materia_id'   => ['nullable', 'exists:materias,id'],
-            'anio_lectivo' => ['required', 'string', 'max:9'],
-            'descripcion'  => ['nullable', 'string'],
-            'activo'       => ['sometimes', 'boolean'],
-            'alumnos'      => ['nullable', 'array'],
-            'alumnos.*'    => ['exists:alumnos,id'],
+            'nombre'             => ['required', 'string', 'max:255'],
+            'docente_id'         => ['nullable', 'exists:docentes,id'],
+            'ambito_id'          => ['nullable', 'exists:ambitos,id'],
+            'anio_lectivo'       => ['required', 'string', 'max:9'],
+            'anio_bachillerato'  => ['required', 'in:1ro,2do'],
+            'descripcion'        => ['nullable', 'string'],
+            'activo'             => ['sometimes', 'boolean'],
+            'alumnos'            => ['nullable', 'array'],
+            'alumnos.*'          => ['exists:alumnos,id'],
         ];
     }
 }

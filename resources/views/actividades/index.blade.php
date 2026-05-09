@@ -17,11 +17,20 @@
                     <input id="q" type="search" name="q" value="{{ request('q') }}" class="cy-input" autocomplete="off">
                 </div>
                 <div>
+                    <label for="fase" class="cy-label">Fase PPE</label>
+                    <select id="fase" name="fase" class="cy-select">
+                        <option value="">Todas</option>
+                        @foreach(config('ppe.fases') as $val => $label)
+                            <option value="{{ $val }}" @selected(request('fase')===$val)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label for="estado" class="cy-label">Estado</label>
                     <select id="estado" name="estado" class="cy-select">
                         <option value="">Todos</option>
-                        @foreach(['planificada','en_curso','completada','cancelada'] as $e)
-                            <option value="{{ $e }}" @selected(request('estado')===$e)>{{ ucfirst(str_replace('_',' ',$e)) }}</option>
+                        @foreach(['planificada' => 'Planificada', 'en_curso' => 'En curso', 'completada' => 'Completada', 'cancelada' => 'Cancelada'] as $val => $label)
+                            <option value="{{ $val }}" @selected(request('estado')===$val)>{{ $label }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -44,6 +53,7 @@
                             <th class="text-left px-4 py-3">Fecha</th>
                             <th class="text-left px-4 py-3">Título</th>
                             <th class="text-left px-4 py-3">Grupo</th>
+                            <th class="text-left px-4 py-3">Fase</th>
                             <th class="text-left px-4 py-3">Horas</th>
                             <th class="text-left px-4 py-3">Estado</th>
                             <th class="px-4 py-3"></th>
@@ -55,17 +65,33 @@
                                 <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400">{{ $a->fecha->format('d/m/Y') }}</td>
                                 <td class="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{{ $a->titulo }}</td>
                                 <td class="px-4 py-3 text-slate-600 dark:text-slate-400">{{ $a->grupo->nombre }}</td>
+                                <td class="px-4 py-3">
+                                    @if($a->fase)
+                                        @php
+                                            $faseBadge = match($a->fase) {
+                                                'formacion'    => 'cy-badge-muted',
+                                                'ejecucion'    => 'cy-badge-cyan',
+                                                'presentacion' => 'cy-badge-yellow',
+                                                default        => 'cy-badge-muted',
+                                            };
+                                            $faseLabel = config('ppe.fases')[$a->fase] ?? $a->fase;
+                                        @endphp
+                                        <span class="{{ $faseBadge }}">{{ $faseLabel }}</span>
+                                    @else
+                                        <span class="text-slate-400">—</span>
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3"><span class="cy-badge-cyan">{{ $a->horas_asignadas }}h</span></td>
                                 <td class="px-4 py-3">
                                     @php
-                                        $b = match($a->estado) {
-                                            'completada' => 'cy-badge-yellow',
+                                        $estadoBadge = match($a->estado) {
+                                            'completada' => 'cy-badge-green',
                                             'en_curso'   => 'cy-badge-cyan',
                                             'cancelada'  => 'cy-badge-magenta',
                                             default      => 'cy-badge-muted',
                                         };
                                     @endphp
-                                    <span class="{{ $b }}">{{ ucfirst(str_replace('_',' ',$a->estado)) }}</span>
+                                    <span class="{{ $estadoBadge }}">{{ ucfirst(str_replace('_', ' ', $a->estado)) }}</span>
                                 </td>
                                 <td class="px-4 py-3 text-right whitespace-nowrap text-sm">
                                     <a href="{{ route('actividades.show', $a) }}" class="text-brand-600 dark:text-brand-400 hover:underline">Ver</a>
@@ -74,7 +100,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
+                                <td colspan="7" class="px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
                                     Sin actividades registradas.
                                 </td>
                             </tr>

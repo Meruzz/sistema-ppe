@@ -177,6 +177,22 @@
         @apply bg-slate-800 text-slate-300 border-slate-700;
     }
 
+    .cy-badge-green {
+        @apply cy-badge
+               bg-green-50 text-green-700 border-green-200;
+    }
+    .dark .cy-badge-green {
+        @apply bg-green-950/50 text-green-300 border-green-900/60;
+    }
+
+    .cy-badge-amber {
+        @apply cy-badge
+               bg-amber-50 text-amber-700 border-amber-200;
+    }
+    .dark .cy-badge-amber {
+        @apply bg-amber-950/50 text-amber-300 border-amber-900/60;
+    }
+
     /* Bracket decoration: visually neutral */
     .cy-bracket::before,
     .cy-bracket::after { content: ''; }

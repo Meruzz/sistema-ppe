@@ -15,8 +15,8 @@ class Grupo extends Model
     protected $table = 'grupos';
 
     protected $fillable = [
-        'nombre', 'docente_id', 'materia_id',
-        'anio_lectivo', 'descripcion', 'activo',
+        'nombre', 'docente_id', 'ambito_id',
+        'anio_lectivo', 'anio_bachillerato', 'descripcion', 'activo',
     ];
 
     protected function casts(): array
@@ -29,9 +29,9 @@ class Grupo extends Model
         return $this->belongsTo(Docente::class);
     }
 
-    public function materia(): BelongsTo
+    public function ambito(): BelongsTo
     {
-        return $this->belongsTo(Materia::class);
+        return $this->belongsTo(Ambito::class);
     }
 
     public function alumnos(): BelongsToMany

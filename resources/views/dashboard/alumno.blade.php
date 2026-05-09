@@ -48,6 +48,21 @@
                 @endif
             </section>
 
+            {{-- Bitácoras pendientes --}}
+            @if($actividadesSinBitacora->isNotEmpty())
+                <section class="cy-card p-4 border-l-4 border-l-amber-400">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                Tienes {{ $actividadesSinBitacora->count() }} {{ $actividadesSinBitacora->count() === 1 ? 'actividad' : 'actividades' }} sin bitácora registrada.
+                            </p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Documenta tu experiencia para que el docente pueda revisarla.</p>
+                        </div>
+                        <a href="{{ route('bitacoras.create') }}" class="cy-btn-primary shrink-0 text-sm">Escribir ahora</a>
+                    </div>
+                </section>
+            @endif
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <section class="cy-card p-6">
                     <h3 class="cy-section-title mb-4">Próximas actividades</h3>

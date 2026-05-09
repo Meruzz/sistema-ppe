@@ -1,4 +1,4 @@
-@props(['grupo' => null, 'docentes', 'materias', 'alumnos'])
+@props(['grupo' => null, 'docentes', 'ambitos', 'alumnos'])
 @csrf
 @php $alumnosSeleccionados = old('alumnos', $grupo?->alumnos->pluck('id')->toArray() ?? []); @endphp
 
@@ -15,20 +15,28 @@
                maxlength="9" class="cy-input mt-1 font-mono" required>
     </div>
     <div>
-        <label for="docente_id" class="cy-label">Docente</label>
-        <select id="docente_id" name="docente_id" class="cy-select mt-1">
-            <option value="">—</option>
-            @foreach($docentes as $d)
-                <option value="{{ $d->id }}" @selected(old('docente_id', $grupo?->docente_id)==$d->id)>{{ $d->nombre_completo }}</option>
+        <label for="anio_bachillerato" class="cy-label">Año de bachillerato <span class="text-rose-500">*</span></label>
+        <select id="anio_bachillerato" name="anio_bachillerato" class="cy-select mt-1" required>
+            @foreach(['1ro' => 'Primero (80 h)', '2do' => 'Segundo (80 h)'] as $val => $label)
+                <option value="{{ $val }}" @selected(old('anio_bachillerato', $grupo?->anio_bachillerato ?? '1ro') === $val)>{{ $label }}</option>
             @endforeach
         </select>
     </div>
     <div>
-        <label for="materia_id" class="cy-label">Materia</label>
-        <select id="materia_id" name="materia_id" class="cy-select mt-1">
+        <label for="ambito_id" class="cy-label">Ámbito PPE</label>
+        <select id="ambito_id" name="ambito_id" class="cy-select mt-1">
+            <option value="">— Sin ámbito asignado —</option>
+            @foreach($ambitos as $a)
+                <option value="{{ $a->id }}" @selected(old('ambito_id', $grupo?->ambito_id) == $a->id)>{{ $a->nombre }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div>
+        <label for="docente_id" class="cy-label">Docente facilitador</label>
+        <select id="docente_id" name="docente_id" class="cy-select mt-1">
             <option value="">—</option>
-            @foreach($materias as $m)
-                <option value="{{ $m->id }}" @selected(old('materia_id', $grupo?->materia_id)==$m->id)>{{ $m->nombre }}</option>
+            @foreach($docentes as $d)
+                <option value="{{ $d->id }}" @selected(old('docente_id', $grupo?->docente_id) == $d->id)>{{ $d->nombre_completo }}</option>
             @endforeach
         </select>
     </div>
@@ -36,9 +44,11 @@
         <label for="descripcion" class="cy-label">Descripción</label>
         <textarea id="descripcion" name="descripcion" rows="2" class="cy-input mt-1">{{ old('descripcion', $grupo?->descripcion) }}</textarea>
     </div>
+
+    {{-- Selección de alumnos --}}
     <div class="md:col-span-2" x-data="{ search: '' }">
         <label class="cy-label mb-2 block">Alumnos</label>
-        <input type="text" x-model="search" placeholder="Filtrar alumnos..."
+        <input type="text" x-model="search" placeholder="Filtrar alumnos…"
                class="cy-input mb-2 text-sm" autocomplete="off">
         <div class="border border-slate-200 dark:border-slate-800 rounded-lg p-3 max-h-64 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-2">
             @foreach($alumnos as $a)
@@ -47,11 +57,14 @@
                     <input type="checkbox" name="alumnos[]" value="{{ $a->id }}"
                            class="rounded border-slate-300 dark:border-slate-600 text-brand-600 focus:ring-brand-500"
                            @checked(in_array($a->id, $alumnosSeleccionados))>
-                    <span class="ms-2 text-slate-700 dark:text-slate-300">{{ $a->apellidos }}, {{ $a->nombres }} ({{ $a->anio_bachillerato }})</span>
+                    <span class="ms-2 text-slate-700 dark:text-slate-300">{{ $a->apellidos }}, {{ $a->nombres }}
+                        <span class="text-slate-400">({{ $a->anio_bachillerato }})</span>
+                    </span>
                 </label>
             @endforeach
         </div>
     </div>
+
     <div class="md:col-span-2">
         <label class="inline-flex items-center cursor-pointer">
             <input type="hidden" name="activo" value="0">

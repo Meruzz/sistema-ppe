@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Actividad extends Model
 {
@@ -14,7 +15,7 @@ class Actividad extends Model
     protected $table = 'actividades';
 
     protected $fillable = [
-        'titulo', 'descripcion', 'grupo_id', 'materia_id',
+        'titulo', 'descripcion', 'grupo_id', 'ambito_id', 'fase',
         'fecha', 'hora_inicio', 'hora_fin', 'horas_asignadas',
         'lugar', 'estado',
     ];
@@ -22,7 +23,7 @@ class Actividad extends Model
     protected function casts(): array
     {
         return [
-            'fecha' => 'date',
+            'fecha'           => 'date',
             'horas_asignadas' => 'decimal:2',
         ];
     }
@@ -32,9 +33,9 @@ class Actividad extends Model
         return $this->belongsTo(Grupo::class);
     }
 
-    public function materia(): BelongsTo
+    public function ambito(): BelongsTo
     {
-        return $this->belongsTo(Materia::class);
+        return $this->belongsTo(Ambito::class);
     }
 
     public function alumnos(): BelongsToMany
@@ -42,5 +43,10 @@ class Actividad extends Model
         return $this->belongsToMany(Alumno::class, 'alumno_actividad')
             ->withPivot(['horas_confirmadas', 'estado', 'observaciones', 'confirmado_en'])
             ->withTimestamps();
+    }
+
+    public function bitacoras(): HasMany
+    {
+        return $this->hasMany(Bitacora::class);
     }
 }
