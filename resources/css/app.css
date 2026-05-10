@@ -206,6 +206,10 @@
     .cy-progress-bar {
         @apply h-full bg-brand-600 transition-[width] duration-500;
     }
+    /* Color overrides — use alongside cy-progress-bar */
+    .cy-progress-bar.bg-emerald-500 { background-color: #10b981; }
+    .cy-progress-bar.bg-amber-500   { background-color: #f59e0b; }
+    .cy-progress-bar.bg-red-500     { background-color: #ef4444; }
 
     /* Stat tile */
     .cy-stat {
