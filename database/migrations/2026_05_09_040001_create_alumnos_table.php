@@ -22,6 +22,13 @@ return new class extends Migration
             $table->string('representante')->nullable();
             $table->string('telefono_representante', 20)->nullable();
             $table->boolean('activo')->default(true);
+
+            // Flags para evitar reenvíos de notificaciones
+            $table->boolean('notif_50_enviada')->default(false);
+            $table->boolean('notif_80_enviada')->default(false);
+            $table->boolean('notif_100_enviada')->default(false);
+            $table->timestamp('notif_nota_baja_en')->nullable();
+
             $table->timestamps();
 
             $table->index(['anio_bachillerato', 'paralelo']);

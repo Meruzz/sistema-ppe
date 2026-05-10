@@ -4,6 +4,7 @@ use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\AnioLectivoController;
 use App\Http\Controllers\BitacoraController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ConvalidacionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocenteController;
@@ -43,6 +44,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->except('show');
         Route::resource('convalidaciones', ConvalidacionController::class)
             ->only(['create', 'store', 'edit', 'update', 'destroy']);
+        Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuraciones.index');
+        Route::put('/configuracion', [ConfiguracionController::class, 'update'])->name('configuraciones.update');
     });
 
     // Admin + Docente

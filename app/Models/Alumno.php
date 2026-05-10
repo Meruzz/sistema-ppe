@@ -19,13 +19,18 @@ class Alumno extends Model
         'user_id', 'cedula', 'nombres', 'apellidos', 'fecha_nacimiento',
         'telefono', 'direccion', 'anio_bachillerato', 'paralelo',
         'representante', 'telefono_representante', 'activo',
+        'notif_50_enviada', 'notif_80_enviada', 'notif_100_enviada', 'notif_nota_baja_en',
     ];
 
     protected function casts(): array
     {
         return [
-            'fecha_nacimiento' => 'date',
-            'activo'           => 'boolean',
+            'fecha_nacimiento'   => 'date',
+            'activo'             => 'boolean',
+            'notif_50_enviada'   => 'boolean',
+            'notif_80_enviada'   => 'boolean',
+            'notif_100_enviada'  => 'boolean',
+            'notif_nota_baja_en' => 'datetime',
         ];
     }
 
